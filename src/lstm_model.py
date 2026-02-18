@@ -45,6 +45,7 @@ class LSTMClasssifier(nn.Module):
 
         with torch.no_grad():
             for _ in range(max_new_tokens):
+                probs = torch.softmax(next_token_logits, dim=-1)
                 top_k = 50
                 values, indices = torch.topk(probs, top_k)
                 probs = torch.zeros_like(probs).scatter_(1, indices, values)

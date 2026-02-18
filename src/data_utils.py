@@ -4,12 +4,12 @@ from pathlib import Path
 import re
 
 
-def tokenize_function(texts, tokenizer):
+def tokenize_function(texts, tokenizer, max_length=128):
     return tokenizer(
-        texts.tolist(), 
+        texts.tolist() if hasattr(texts, 'tolist') else texts, 
         padding="max_length", 
         truncation=True, 
-        max_length=128, # или ваша длина
+        max_length=max_length,
         return_tensors="pt"
     )
 
