@@ -34,7 +34,6 @@ class LSTMClasssifier(nn.Module):
     
     def generate(self, input_ids, max_new_tokens, tokenizer, temperature=1.0):
         self.eval()
-        device = input_ids.device
         current_tokens = input_ids
         
         emb = self.embedding(current_tokens)
@@ -46,7 +45,11 @@ class LSTMClasssifier(nn.Module):
 
         with torch.no_grad():
             for _ in range(max_new_tokens):
-                probs = torch.softmax(next_token_logits, dim=-1)
+                top_k = 50
+                values, indices = torch.topk(probs, top_k)
+                probs = torch.zeros_like(probs).scatter_(1, indices, values)
+                probs = probs / probs.sum(dim=-1, keepdim=True)
+
                 next_token = torch.multinomial(probs, num_samples=1)
                 generated_sequence.append(next_token)
 
