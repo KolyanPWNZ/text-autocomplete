@@ -15,21 +15,17 @@ class TweetDataset(Dataset):
         input_ids = self.input_ids[idx].clone().detach()
         attention_mask = self.attention_mask[idx].clone().detach()
 
-        labels = input_ids.clone().detach()
+        labels = input_ids.clone()
 
         actual_length = attention_mask.sum().item()
-
         split_point = int(actual_length * 0.75)
 
-        # скрываем токены контекста
         labels[:split_point] = self.hiding_token
-
-        # помечаем паддинг 
         labels[actual_length:] = self.hiding_token
 
         return {
-            "input_ids": torch.tensor(input_ids, dtype=torch.long),
-            "attention_mask": torch.tensor(attention_mask, dtype=torch.long),
-            "labels": torch.tensor(labels, dtype=torch.long),
+            "input_ids": input_ids,
+            "attention_mask": attention_mask,
+            "labels": labels,
         }
         
