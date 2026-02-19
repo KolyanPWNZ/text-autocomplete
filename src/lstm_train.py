@@ -27,7 +27,7 @@ def train_model(model, train_loader, val_loader, optimizer,
             optimizer.zero_grad()
             logits, _ = model(input_ids)
 
-            # Сдвиг для language modeling
+            # Сдвиг
             shift_logits = logits[:, :-1, :].contiguous()
             shift_labels = labels[:, 1:].contiguous()
 
